@@ -120,6 +120,8 @@ namespace CesiumForUnity
                     return $"{baseName}.dll";
                 case BuildTarget.iOS:
                     return $"lib{baseName}.a";
+                case BuildTarget.VisionOS:
+                    return $"lib{baseName}.a";
                 case BuildTarget.StandaloneOSX:
                     return $"lib{baseName}.dylib";
                 default:
@@ -340,6 +342,15 @@ namespace CesiumForUnity
                 library.ExtraConfigureArgs.Add("-DCMAKE_OSX_ARCHITECTURES=arm64");
             }
 
+            if (platform.platformGroup == BuildTargetGroup.VisionOS)
+            {
+                library.Toolchain = "extern/visionOS-toolchain.cmake";
+                library.ExtraConfigureArgs.Add("-GXcode");
+                library.ExtraConfigureArgs.Add("-DCMAKE_SYSTEM_NAME=visionOS");
+                library.ExtraConfigureArgs.Add("-DCMAKE_SYSTEM_PROCESSOR=aarch64");
+                library.ExtraConfigureArgs.Add("-DCMAKE_OSX_ARCHITECTURES=arm64");
+            }
+
             if (platform.platform == BuildTarget.StandaloneOSX)
             {
                 if (cpu != null)
@@ -428,9 +439,9 @@ namespace CesiumForUnity
                 {
                     ProcessStartInfo startInfo = new ProcessStartInfo();
                     startInfo.UseShellExecute = false;
-                    if (library.Platform == BuildTarget.StandaloneOSX || library.Platform == BuildTarget.iOS)
+                    if (library.Platform == BuildTarget.StandaloneOSX || library.Platform == BuildTarget.iOS || library.Platform == BuildTarget.VisionOS)
                     {
-                        startInfo.FileName = File.Exists("/Applications/CMake.app/Contents/bin/cmake") ? "/Applications/CMake.app/Contents/bin/cmake" : "cmake";
+                        startInfo.FileName = File.Exists("/Applications/CMake.app/Contents/bin/cmake") ? "/Applications/CMake.app/Contents/bin/cmake" : "/opt/homebrew/bin/cmake";
                     }
                     else
                     {
@@ -477,7 +488,7 @@ namespace CesiumForUnity
                     startInfo.Arguments = string.Join(' ', args);
                     RunAndLog(startInfo, log, logFilename);
 
-                    if (library.Platform == BuildTarget.iOS)
+                    if (library.Platform == BuildTarget.iOS || library.Platform == BuildTarget.VisionOS)
                         AssetDatabase.Refresh();
                 }
             }

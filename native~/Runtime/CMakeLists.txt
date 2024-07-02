@@ -11,6 +11,9 @@ file(GLOB_RECURSE CESIUMFORUNITYNATIVE_HEADERS CONFIGURE_DEPENDS src/*.h ${REINT
 
 if (${CMAKE_SYSTEM_NAME} STREQUAL "iOS")
     add_library(CesiumForUnityNative-Runtime STATIC)
+elseif (${CMAKE_SYSTEM_NAME} STREQUAL "visionOS")
+    message(STATUS "Building for visionOS")
+    add_library(CesiumForUnityNative-Runtime STATIC)
 else()
     add_library(CesiumForUnityNative-Runtime SHARED)
 endif()
