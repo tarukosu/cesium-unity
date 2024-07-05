@@ -71,8 +71,11 @@ endif()
 
 set(LIB_INSTALL_DIR ${CMAKE_INSTALL_LIBDIR})
 
+# echo CMAKE_STSYEM_NAME
+message(STATUS "CMAKE_SYSTEM_NAME: ${CMAKE_SYSTEM_NAME}")
+
 # Specify all targets that need to compile bitcode
-if (${CMAKE_SYSTEM_NAME} STREQUAL "iOS")
+if (${CMAKE_SYSTEM_NAME} STREQUAL "visionOS")
     set (ALL_TARGETS
         CesiumForUnityNative-Runtime
         Async++
